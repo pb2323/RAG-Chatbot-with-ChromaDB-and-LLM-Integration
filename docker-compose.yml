@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  chromadb:
+    image: chromadb/chromadb:latest
+    container_name: chromadb_container
+    volumes:
+      - ./chroma_data:/data  # Maps local directory for persistence
+    ports:
+      - "8000:8000"
+    environment:
+      - CHROMA_DB_PERSIST_DIRECTORY=/data  # Specifies the persistent storage directory in the container
