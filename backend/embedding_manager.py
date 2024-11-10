@@ -46,7 +46,7 @@ def setup_collection():
     model = SentenceTransformer("all-MiniLM-L6-v2")
 
     # Extract and add data from PDFs
-    pdf_files = ["data/SOFI-2023.pdf", "data/SOFI-2024.pdf"]
+    pdf_files = ["../data/SOFI-2023.pdf", "../data/SOFI-2024.pdf"]
     for pdf_file in pdf_files:
         pdf_data = extract_text_from_pdf(pdf_file)
         for item in pdf_data:

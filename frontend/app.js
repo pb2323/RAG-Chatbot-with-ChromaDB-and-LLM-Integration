@@ -4,7 +4,7 @@ async function submitQuery() {
     resultsDiv.innerHTML = "Loading...";
 
     try {
-        const response = await fetch("http://127.0.0.1:5001/query", {
+        const response = await fetch("http://127.0.0.1:5001/submit_query", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -12,8 +12,12 @@ async function submitQuery() {
             body: JSON.stringify({ query: queryInput })
         });
 
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+
         const data = await response.json();
-        if (data.response.text) {
+        if (data.response && data.response.text) {
             resultsDiv.innerHTML = `
                 <p>${data.response.text}</p>
                 <p><strong>Source:</strong> ${data.response.source}</p>
