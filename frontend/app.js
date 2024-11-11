@@ -17,13 +17,11 @@ async function submitQuery() {
         }
 
         const data = await response.json();
-        if (data.response && data.response.text) {
+        // console.log("Response data:", data.response);  // Log entire response data for debugging
+
+        if (data.response) {
             resultsDiv.innerHTML = `
-                <p>${data.response.text}</p>
-                <p><strong>Source:</strong> ${data.response.source}</p>
-                <p><strong>Page:</strong> ${data.response.page}</p>
-                <p><strong>Year:</strong> ${data.response.year}</p>
-                <p><strong>Similarity:</strong> ${data.response.similarity.toFixed(2)}</p>
+                <p>${data.response}</p>
             `;
         } else {
             resultsDiv.innerHTML = "No relevant results found.";

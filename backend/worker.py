@@ -1,8 +1,12 @@
 import pika
 import json
+import openai
 from chromadb import PersistentClient
 from chromadb.config import Settings
 from sentence_transformers import SentenceTransformer
+
+# Initialize OpenAI API key
+openai.api_key = 'YOUR_API_KEY'
 
 # Initialize ChromaDB and SentenceTransformer
 client = PersistentClient(
@@ -18,6 +22,22 @@ channel = connection.channel()
 
 channel.queue_declare(queue='query_queue')
 channel.queue_declare(queue='response_queue')
+
+# Function to generate a refined response using OpenAI
+def generate_openai_response(user_query, context_text):
+    prompt = f"User query: {user_query}\n\nContext:\n{context_text}\n\nPlease provide a concise and relevant answer based on this information."
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",  # Use "gpt-4" if you have access and prefer it
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant that provides concise answers based on provided context."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        return response['choices'][0]['message']['content']
+    except Exception as e:
+        print(f"Error with OpenAI API: {e}")
+        return "An error occurred while generating the response with OpenAI."
 
 # Process function to handle incoming queries
 def process_query(ch, method, properties, body):
@@ -43,9 +63,20 @@ def process_query(ch, method, properties, body):
             "year": results["metadatas"][0][min_index].get("year"),
             "similarity": results["distances"][0][min_index],
         }
-        response_data = {"response": closest_match}
+       
+        # Generate a refined response from OpenAI
+        context_text = closest_match["text"]
+        print("context: "+context_text)
+        openai_response = generate_openai_response(user_query, context_text)
+        # openai_response="ABC"
+        response_data = {
+            "response": openai_response,
+            "context": closest_match  # Include original context for reference if needed
+        }
 
-    # Publish the response back to response_queue
+        print("response_data: "+response_data["response"])
+
+    # Publish the refined response back to response_queue
     ch.basic_publish(
         exchange='',
         routing_key=properties.reply_to,
@@ -58,3 +89,6 @@ def process_query(ch, method, properties, body):
 channel.basic_consume(queue='query_queue', on_message_callback=process_query)
 print("Worker is waiting for messages in query_queue. To exit, press CTRL+C")
 channel.start_consuming()
+
+
+
