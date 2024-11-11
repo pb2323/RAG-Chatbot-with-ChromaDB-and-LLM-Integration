@@ -45,7 +45,12 @@ https://drive.google.com/file/d/1_0L86sPzRxhvStVrlQE6943b-BvsT5mF/view?usp=drive
 redis-server
 ```
 **Run Backend**:
-   ```bash   
-   python backend/worker.py
-   python backend/main.py
+   ```bash
+   cd backend
+
+   python embedding_manager.py
+
+   python worker.py
+
+   python main.py
 ```
