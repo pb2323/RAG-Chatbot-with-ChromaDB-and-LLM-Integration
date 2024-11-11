@@ -1,4 +1,4 @@
-# **Dynamic RAG Chatbot with ChromaDB and LLM Integration**
+# **RAG Chatbot with ChromaDB and LLM Integration**
 
 This project is a **Retrieval-Augmented Generation (RAG) Chatbot** that combines ChromaDB for document retrieval and a large language model (LLM) for answer generation. The chatbot provides intelligent responses based on information from provided PDFs, making it useful for complex document-driven Q&A.
 
@@ -15,10 +15,11 @@ This project is a **Retrieval-Augmented Generation (RAG) Chatbot** that combines
 - **Message Queue & Cache**: RabbitMQ, Redis
 
 ## **Video Demo**
-```
-https://github.com/patilkalpesh/RAG-Chatbot-with-ChromaDB-and-LLM-Integration/blob/main/data/Thumbnail.png
-```
+
 [![Project Demo](https://github.com/patilkalpesh/RAG-Chatbot-with-ChromaDB-and-LLM-Integration/blob/main/data/Thumbnail.png)](https://drive.google.com/file/d/1_0L86sPzRxhvStVrlQE6943b-BvsT5mF/view?usp=drive_link)
+```
+https://drive.google.com/file/d/1_0L86sPzRxhvStVrlQE6943b-BvsT5mF/view?usp=drive_link
+```
 
 ## **Setup**
 
