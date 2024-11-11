@@ -14,7 +14,7 @@ This project is a **Retrieval-Augmented Generation (RAG) Chatbot** that combines
 - **Frontend**: HTML, JavaScript
 - **Message Queue & Cache**: RabbitMQ, Redis
 
-## ***Video Demo***
+## **Video Demo**
 ```
 https://github.com/patilkalpesh/RAG-Chatbot-with-ChromaDB-and-LLM-Integration/blob/main/data/Thumbnail.png
 ```
@@ -25,7 +25,9 @@ https://github.com/patilkalpesh/RAG-Chatbot-with-ChromaDB-and-LLM-Integration/bl
 **Clone the repository** and **install dependencies**:
    ```bash
    git clone https://github.com/patilkalpesh/RAG-Chatbot-with-ChromaDB-and-LLM-Integration.git
+
    cd RAG-Chatbot-with-ChromaDB-and-LLM-Integration
+
    pip install -r requirements.txt
 ```
 **Add your OpenAI API key**:
