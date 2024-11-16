@@ -1,0 +1,68 @@
+name: CI/CD Pipeline
+
+# Trigger workflow on events
+on:
+  push:
+    branches:
+      - main # Run the workflow on push to the 'main' branch
+
+  pull_request:
+    branches:
+      - main
+
+# Define jobs
+jobs:
+  build:
+    # Use the latest Ubuntu runner
+    runs-on: ubuntu-latest
+
+    # Steps within the build job
+    steps:
+      # Check out the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Set up Node.js (example for JavaScript projects)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      # Install dependencies
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      # Run build
+      - name: Build Project
+        run: python main.py
+
+  test:
+    # Run tests after building
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Install dependencies
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      # Run tests
+      - name: Run Tests
+        run: python test_chroma_query.py
+
+  deploy:
+    # Deployment job
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Deployment script (replace with your deployment logic)
+      - name: Deploy Application
+        run: |
+          echo "Deploying application..."
+          # Add deployment commands here
+
