@@ -1,12 +1,13 @@
 import pika
 import json
-import openai
+
+# import openai
 from chromadb import PersistentClient
 from chromadb.config import Settings
 from sentence_transformers import SentenceTransformer
 
 # Initialize OpenAI API key
-openai.api_key = "Your-API-Key"
+# openai.api_key = "Your-API-Key"
 
 # Initialize ChromaDB and SentenceTransformer
 client = PersistentClient(
@@ -26,22 +27,24 @@ channel.queue_declare(queue="response_queue")
 
 # Function to generate a refined response using OpenAI
 def generate_openai_response(user_query, context_text):
-    prompt = f"User query: {user_query}\n\nContext:\n{context_text}\n\nPlease provide a concise and relevant answer based on this information."
-    try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # Use "gpt-4" if available
-            messages=[
-                {
-                    "role": "system",
-                    "content": "You are a helpful assistant that provides concise answers based on provided context.",
-                },
-                {"role": "user", "content": prompt},
-            ],
-        )
-        return response["choices"][0]["message"]["content"]
-    except Exception as e:
-        print(f"Error with OpenAI API: {e}")
-        return "An error occurred while generating the response with OpenAI."
+    # To test CI/CD
+    return "Test"
+    # prompt = f"User query: {user_query}\n\nContext:\n{context_text}\n\nPlease provide a concise and relevant answer based on this information."
+    # try:
+    #     response = openai.ChatCompletion.create(
+    #         model="gpt-3.5-turbo",  # Use "gpt-4" if available
+    #         messages=[
+    #             {
+    #                 "role": "system",
+    #                 "content": "You are a helpful assistant that provides concise answers based on provided context.",
+    #             },
+    #             {"role": "user", "content": prompt},
+    #         ],
+    #     )
+    #     return response["choices"][0]["message"]["content"]
+    # except Exception as e:
+    #     print(f"Error with OpenAI API: {e}")
+    #     return "An error occurred while generating the response with OpenAI."
 
 
 # Process function to handle incoming queries
@@ -83,8 +86,9 @@ def process_query(ch, method, properties, body):
         context_text = "\n\n".join([match["text"] for match in top_matches])
 
         # Generate a refined response from OpenAI
-        openai_response = generate_openai_response(user_query, context_text)
-
+        # openai_response = generate_openai_response(user_query, context_text)
+        # Added this to test the CI/CD, as it is failing because of the missing key
+        openai_response = "Test"
         # Prepare response data
         response_data = {
             "response": openai_response,

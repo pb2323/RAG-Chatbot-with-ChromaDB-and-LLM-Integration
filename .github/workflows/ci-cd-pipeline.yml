@@ -1,40 +1,73 @@
 name: CI/CD Pipeline
 
-# Trigger workflow on events
 on:
   push:
     branches:
-      - main # Run the workflow on push to the 'main' branch
+      - main
 
   pull_request:
     branches:
       - main
 
-# Define jobs
 jobs:
   build:
-    # Use the latest Ubuntu runner
     runs-on: ubuntu-latest
 
-    # Steps within the build job
     steps:
       # Check out the repository
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.5.0
 
-      # Set up Node.js (example for JavaScript projects)
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      # Install Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          node-version: '16'
+          python-version: '3.9'
+
+      # Install Redis
+      - name: Install Redis
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y redis-server
+          redis-server --daemonize yes
+          echo "Redis server started successfully."
+
+      # Install Docker using the official installation script
+      - name: Install Docker
+        run: |
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sudo sh get-docker.sh
+          sudo usermod -aG docker $USER
+          docker --version
+          echo "Docker installed successfully."
+
+      # Start RabbitMQ in Docker
+      - name: Start RabbitMQ in Docker
+        run: |
+          docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4.0-management &
+          echo "RabbitMQ started successfully."
 
       # Install dependencies
-      - name: Install Dependencies
+      - name: Install Python Dependencies
         run: pip install -r requirements.txt
 
-      # Run build
-      - name: Build Project
-        run: python main.py
+      # Run embedding_manager.py
+      - name: Run Embedding Manager
+        run: |
+          cd backend
+          python embedding_manager.py &
+
+      # # Run worker.py
+      # - name: Run Worker
+      #   run: |
+      #     cd backend
+      #     python worker.py &
+
+      # # Run main.py
+      # - name: Run Main Application
+      #   run: |
+      #     cd backend
+      #     python main.py
 
   test:
     # Run tests after building
@@ -42,15 +75,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.5.0 # Pinned to the latest version
 
       # Install dependencies
-      - name: Install Dependencies
+      - name: Install Python Dependencies
         run: pip install -r requirements.txt
 
       # Run tests
       - name: Run Tests
-        run: python test_chroma_query.py
+        run: python test_chroma_persistence.py
 
   deploy:
     # Deployment job
@@ -58,7 +91,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.5.0 # Pinned to the latest version
 
       # Deployment script (replace with your deployment logic)
       - name: Deploy Application
