@@ -46,8 +46,16 @@ def setup_collection():
     model = SentenceTransformer("all-MiniLM-L6-v2")
 
     # Extract and add data from PDFs
-    pdf_files = ["../data/SOFI-2023.pdf", "../data/SOFI-2024.pdf"]
-    for pdf_file in pdf_files:
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    data_dir = os.path.join(base_dir, "../data")
+    pdf_files = ["SOFI-2023.pdf", "SOFI-2024.pdf"]
+    pdf_file_paths = [os.path.join(data_dir, pdf) for pdf in pdf_files]
+
+    # Ensure all PDF files exist
+    missing_files = [pdf for pdf in pdf_file_paths if not os.path.exists(pdf)]
+    if missing_files:
+        raise FileNotFoundError(f"The following PDF files are missing: {missing_files}")
+    for pdf_file in pdf_file_paths:
         pdf_data = extract_text_from_pdf(pdf_file)
         for item in pdf_data:
             embedding = model.encode(item["text"]).tolist()
