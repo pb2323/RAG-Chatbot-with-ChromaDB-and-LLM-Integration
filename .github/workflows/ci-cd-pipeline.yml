@@ -88,14 +88,44 @@ jobs:
   deploy:
     # Deployment job
     needs: test
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3.5.0 # Pinned to the latest version
+        uses: actions/checkout@v3.5.0
 
-      # Deployment script (replace with your deployment logic)
-      - name: Deploy Application
+      - name: Install Python Dependencies
         run: |
-          echo "Deploying application..."
-          # Add deployment commands here
+          echo "Installing Python dependencies..."
+          pip install -r requirements.txt
+
+      - name: Start RabbitMQ in Docker
+        run: |
+          echo "Starting RabbitMQ..."
+          docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4.0-management &
+
+      - name: Start Redis
+        run: |
+          echo "Starting Redis..."
+          redis-server --daemonize yes
+
+      - name: Change to Backend Directory
+        run: |
+          echo "Navigating to backend directory..."
+          cd backend
+
+      - name: Run Embedding Manager
+        run: |
+          echo "Running embedding_manager.py..."
+          python embedding_manager.py
+
+      - name: Run Worker
+        run: |
+          echo "Running worker.py..."
+          python worker.py > worker.log 2>&1 &
+          sleep 5
+
+      - name: Run Main Application
+        run: |
+          echo "Running main.py..."
+          python main.py > main.log 2>&1 &
 
