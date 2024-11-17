@@ -121,11 +121,11 @@ jobs:
       - name: Run Worker
         run: |
           echo "Running worker.py..."
-          python worker.py > worker.log 2>&1 &
+          python backend/worker.py > worker.log 2>&1 &
           sleep 5
 
       - name: Run Main Application
         run: |
           echo "Running main.py..."
-          python main.py > main.log 2>&1 &
+          python backend/main.py > main.log 2>&1 &
 
