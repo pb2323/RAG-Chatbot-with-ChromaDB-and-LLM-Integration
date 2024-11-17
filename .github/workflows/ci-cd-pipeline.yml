@@ -87,7 +87,7 @@ jobs:
 
   deploy:
     # Deployment job
-    needs: build
+    needs: test
     runs-on: self-hosted
     steps:
       - name: Checkout Code
