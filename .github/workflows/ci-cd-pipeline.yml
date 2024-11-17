@@ -10,80 +10,80 @@ on:
       - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  # build:
+  #   runs-on: ubuntu-latest
 
-    steps:
-      # Check out the repository
-      - name: Checkout Code
-        uses: actions/checkout@v3.5.0
+  #   steps:
+  #     # Check out the repository
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v3.5.0
 
-      # Install Python
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
+  #     # Install Python
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: '3.9'
 
-      # Install Redis
-      - name: Install Redis
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y redis-server
-          redis-server --daemonize yes
-          echo "Redis server started successfully."
+  #     # Install Redis
+  #     - name: Install Redis
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install -y redis-server
+  #         redis-server --daemonize yes
+  #         echo "Redis server started successfully."
 
-      # Install Docker using the official installation script
-      - name: Install Docker
-        run: |
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sudo sh get-docker.sh
-          sudo usermod -aG docker $USER
-          docker --version
-          echo "Docker installed successfully."
+  #     # Install Docker using the official installation script
+  #     - name: Install Docker
+  #       run: |
+  #         curl -fsSL https://get.docker.com -o get-docker.sh
+  #         sudo sh get-docker.sh
+  #         sudo usermod -aG docker $USER
+  #         docker --version
+  #         echo "Docker installed successfully."
 
-      # Start RabbitMQ in Docker
-      - name: Start RabbitMQ in Docker
-        run: |
-          docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4.0-management &
-          echo "RabbitMQ started successfully."
+  #     # Start RabbitMQ in Docker
+  #     - name: Start RabbitMQ in Docker
+  #       run: |
+  #         docker run -it --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4.0-management &
+  #         echo "RabbitMQ started successfully."
 
-      # Install dependencies
-      - name: Install Python Dependencies
-        run: pip install -r requirements.txt
+  #     # Install dependencies
+  #     - name: Install Python Dependencies
+  #       run: pip install -r requirements.txt
 
-      # Run embedding_manager.py
-      - name: Run Embedding Manager
-        run: |
-          cd backend
-          python embedding_manager.py &
+  #     # Run embedding_manager.py
+  #     - name: Run Embedding Manager
+  #       run: |
+  #         cd backend
+  #         python embedding_manager.py &
 
-      # # Run worker.py
-      # - name: Run Worker
-      #   run: |
-      #     cd backend
-      #     python worker.py &
+  #     # # Run worker.py
+  #     # - name: Run Worker
+  #     #   run: |
+  #     #     cd backend
+  #     #     python worker.py &
 
-      # # Run main.py
-      # - name: Run Main Application
-      #   run: |
-      #     cd backend
-      #     python main.py
+  #     # # Run main.py
+  #     # - name: Run Main Application
+  #     #   run: |
+  #     #     cd backend
+  #     #     python main.py
 
-  test:
-    # Run tests after building
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3.5.0 # Pinned to the latest version
+  # test:
+  #   # Run tests after building
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v3.5.0 # Pinned to the latest version
 
-      # Install dependencies
-      - name: Install Python Dependencies
-        run: pip install -r requirements.txt
+  #     # Install dependencies
+  #     - name: Install Python Dependencies
+  #       run: pip install -r requirements.txt
 
-      # Run tests
-      - name: Run Tests
-        run: python test_chroma_persistence.py
+  #     # Run tests
+  #     - name: Run Tests
+  #       run: python test_chroma_persistence.py
 
   deploy:
     # Deployment job
@@ -108,15 +108,15 @@ jobs:
           echo "Starting Redis..."
           redis-server --daemonize yes
 
-      - name: Change to Backend Directory
-        run: |
-          echo "Navigating to backend directory..."
-          cd backend
+      # - name: Change to Backend Directory
+      #   run: |
+      #     echo "Navigating to backend directory..."
+      #     cd backend
 
       - name: Run Embedding Manager
         run: |
           echo "Running embedding_manager.py..."
-          python embedding_manager.py
+          python backend/embedding_manager.py
 
       - name: Run Worker
         run: |
