@@ -69,25 +69,25 @@ jobs:
       #     cd backend
       #     python main.py
 
-  # test:
-  #   # Run tests after building
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout Code
-  #       uses: actions/checkout@v3.5.0 # Pinned to the latest version
+  test:
+    # Run tests after building
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3.5.0 # Pinned to the latest version
 
-  #     # Install dependencies
-  #     - name: Install Python Dependencies
-  #       run: pip install -r requirements.txt
+      # Install dependencies
+      - name: Install Python Dependencies
+        run: pip install -r requirements.txt
 
-  #     # Run tests
-  #     - name: Run Tests
-  #       run: python test_chroma_persistence.py
+      # Run tests
+      - name: Run Tests
+        run: python test_chroma_persistence.py
 
   deploy:
     # Deployment job
-    # needs: build
+    needs: build
     runs-on: self-hosted
     steps:
       - name: Checkout Code
@@ -107,11 +107,6 @@ jobs:
         run: |
           echo "Starting Redis..."
           redis-server --daemonize yes
-
-      # - name: Change to Backend Directory
-      #   run: |
-      #     echo "Navigating to backend directory..."
-      #     cd backend
 
       - name: Run Embedding Manager
         run: |
